@@ -30,7 +30,7 @@ export default {
     postPet: function () {
       console.log("creating pet")
       axios.post("http://localhost:3000/pets.json", this.newPet).then(response => {
-        this.pets.push(this.newPet)
+        this.pets.push(response.data)
       })
     },
     showEditPet: function (pet) {
@@ -42,6 +42,14 @@ export default {
       console.log("updating pet")
       axios.patch(`http://localhost:3000/pets/${this.currentPet.id}.json`, this.currentPet).then(response => {
         console.log(this.currentPet)
+      })
+    },
+    deletePet: function () {
+      console.log("deleting pet")
+      axios.delete(`http://localhost:3000/pets/${this.currentPet.id}.json`).then(response => {
+        console.log(response.data)
+        var index = this.pets.indexOf(this.currentPet)
+        this.pets.splice(index, 1)
       })
     }
   },
@@ -80,6 +88,7 @@ export default {
       <input type="text" v-model="currentPet.animal"> <br />
       <input type="text" v-model="currentPet.age"> <br />
       <button v-on:click="updatePet">update</button>
+      <button v-on:click="deletePet">delete</button>
       <button>close</button>
     </form>
   </dialog>
