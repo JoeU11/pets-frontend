@@ -32,6 +32,17 @@ export default {
       axios.post("http://localhost:3000/pets.json", this.newPet).then(response => {
         this.pets.push(this.newPet)
       })
+    },
+    showEditPet: function (pet) {
+      console.log("opening pet editor")
+      this.currentPet = pet
+      document.querySelector("#edit").showModal()
+    },
+    updatePet: function () {
+      console.log("updating pet")
+      axios.patch(`http://localhost:3000/pets/${this.currentPet.id}.json`, this.currentPet).then(response => {
+        console.log(this.currentPet)
+      })
     }
   },
 };
@@ -49,15 +60,26 @@ export default {
     <div v-for="pet in pets">
       {{ pet.name }} <br />
       <button v-on:click="showPet(pet)">more info</button>
+      <button v-on:click="showEditPet(pet)">edit pet</button>
       <hr />
     </div>
   </div>
 
   <dialog id="details">
-    <form model="dialog">
+    <form method="dialog">
       name: {{ currentPet.name }} <br />
       animal type: {{ currentPet.animal }} <br />
       age: {{ currentPet.age }} <br />
+      <button>close</button>
+    </form>
+  </dialog>
+
+  <dialog id="edit">
+    <form method="dialog">
+      <input type="text" v-model="currentPet.name"> <br />
+      <input type="text" v-model="currentPet.animal"> <br />
+      <input type="text" v-model="currentPet.age"> <br />
+      <button v-on:click="updatePet">update</button>
       <button>close</button>
     </form>
   </dialog>
