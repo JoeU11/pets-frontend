@@ -8,7 +8,8 @@ export default {
       message: "Welcome to the Pets app!",
       pets: [],
       currentPet: {},
-      newPet: { name: "name", animal: "animal type", age: "age" }
+      newPet: { name: "name", animal: "animal type", age: "age" },
+      errors: []
     };
   },
   created: function () {
@@ -31,6 +32,10 @@ export default {
       console.log("creating pet")
       axios.post("http://localhost:3000/pets.json", this.newPet).then(response => {
         this.pets.push(response.data)
+      }).catch(errors => {
+        console.log(errors.response.data)
+        this.errors = errors.response.data
+        document.querySelector("#error").showModal()
       })
     },
     showEditPet: function (pet) {
@@ -42,6 +47,10 @@ export default {
       console.log("updating pet")
       axios.patch(`http://localhost:3000/pets/${this.currentPet.id}.json`, this.currentPet).then(response => {
         console.log(this.currentPet)
+      }).catch(errors => {
+        console.log(errors.response.data)
+        this.errors = errors.response.data
+        document.querySelector("#error").showModal()
       })
     },
     deletePet: function () {
@@ -89,6 +98,15 @@ export default {
       <input type="text" v-model="currentPet.age"> <br />
       <button v-on:click="updatePet">update</button>
       <button v-on:click="deletePet">delete</button>
+      <button>close</button>
+    </form>
+  </dialog>
+
+  <dialog id="error">
+    <form method="dialog">
+      <div v-for="error in errors.errors">
+        {{ error }} <br />
+      </div>
       <button>close</button>
     </form>
   </dialog>
