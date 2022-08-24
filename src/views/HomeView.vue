@@ -5,9 +5,10 @@ import axios from "axios"
 export default {
   data: function () {
     return {
-      message: "Welcome to Vue.js!",
+      message: "Welcome to the Pets app!",
       pets: [],
-      currentPet: {}
+      currentPet: {},
+      newPet: { name: "name", animal: "animal type", age: "age" }
     };
   },
   created: function () {
@@ -25,6 +26,12 @@ export default {
       console.log("showing pet")
       this.currentPet = pet
       document.querySelector("#details").showModal()
+    },
+    postPet: function () {
+      console.log("creating pet")
+      axios.post("http://localhost:3000/pets.json", this.newPet).then(response => {
+        this.pets.push(this.newPet)
+      })
     }
   },
 };
@@ -33,6 +40,12 @@ export default {
 <template>
   <div class="home">
     <h1>{{ message }}</h1>
+    <hr />
+    <input type="text" v-model="newPet.name"> <br />
+    <input type="text" v-model="newPet.animal"> <br />
+    <input type="text" v-model="newPet.age"> <br />
+    <button v-on:click="postPet">add pet</button>
+    <hr />
     <div v-for="pet in pets">
       {{ pet.name }} <br />
       <button v-on:click="showPet(pet)">more info</button>
